@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Pop Movies</string>
+    <string name="detail_name">Movie Details</string>
+    <string name="error_message">Loading Error</string>
+
+    <!--menu strings-->
+    <string name="menu_popular">Popular Movies</string>
+    <string name="menu_highest_rated">Highest Rated Movies</string>
+</resources>
