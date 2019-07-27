@@ -6,4 +6,5 @@
     <!--menu strings-->
     <string name="menu_popular">Popular Movies</string>
     <string name="menu_highest_rated">Highest Rated Movies</string>
+    <string name="movie_data_not_found">Movie Data Not Found</string>
 </resources>

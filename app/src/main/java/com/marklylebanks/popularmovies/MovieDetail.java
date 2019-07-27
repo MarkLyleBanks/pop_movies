@@ -12,9 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
-import static com.marklylebanks.popularmovies.Utilities.getDisplayWidth;
-import static com.marklylebanks.popularmovies.Utilities.getImageSize;
-
 public class MovieDetail extends AppCompatActivity {
 
     Movie movie;
@@ -54,17 +51,13 @@ public class MovieDetail extends AppCompatActivity {
         yearString = yearString.substring(0, yearEnd);
         mYear.setText(yearString);
         mTitle.setText(movie.getTitle());
-        String ratingString = movie.getViewerRating() + "/10";
+        String ratingString = movie.getViewerRating() + " / 10";
         mRating.setText(ratingString);
         mOverview.setText(movie.getOverview());
         String currentMovie = movie.getPhoto();
-        String imageSize = getImageSize(getDisplayWidth(mContext)/3);
-
+        String imageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext)/3);
         String url = MovieAdapter.IMAGE_URL_BASE + imageSize + currentMovie;
         Log.i("test", "url string is:" + url);
-        //Picasso.with(this).load(url).into(mPoster);
-        //Picasso.with(mPoster.getContext()).load(url).into(mPoster);
-        //Picasso.with(holder.mMovieImageView.getContext()).load(url).into(holder.mMovieImageView);
         Picasso.get().load(url).into(mPoster);
 
 

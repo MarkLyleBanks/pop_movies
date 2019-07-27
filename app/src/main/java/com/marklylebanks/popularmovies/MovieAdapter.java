@@ -11,9 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import static com.marklylebanks.popularmovies.Utilities.getDisplayWidth;
-import static com.marklylebanks.popularmovies.Utilities.getImageSize;
-
 /**
  * Created by Mark on 9/2/2017.
  */
@@ -36,8 +33,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     public MovieAdapter(MovieAdapterOnClickHandler handler, Context context) {
         mClickHandler = handler;
         mContext = context;
-        mImageSize = getImageSize(getDisplayWidth(mContext)/2);
-
+       mImageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext)/2);
+       // mImageSize = "w500";
     }
 
 
