@@ -1,5 +1,6 @@
 package com.marklylebanks.popularmovies;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,13 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
-import static com.marklylebanks.popularmovies.MainActivity.getDisplayWidth;
-import static com.marklylebanks.popularmovies.MainActivity.getImageSize;
+import static com.marklylebanks.popularmovies.Utilities.getDisplayWidth;
+import static com.marklylebanks.popularmovies.Utilities.getImageSize;
 
 public class MovieDetail extends AppCompatActivity {
 
     Movie movie;
     int position;
+    Context mContext;
 
     TextView mErrorTextView, mTitle, mYear, mRating, mOverview;
     ImageView mPoster;
@@ -33,6 +35,7 @@ public class MovieDetail extends AppCompatActivity {
         mRating = (TextView) findViewById(R.id.tv_rating);
         mOverview = (TextView) findViewById(R.id.tv_overview);
         mPoster = (ImageView) findViewById(R.id.iv_poster);
+        mContext = getApplicationContext();
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
@@ -55,14 +58,14 @@ public class MovieDetail extends AppCompatActivity {
         mRating.setText(ratingString);
         mOverview.setText(movie.getOverview());
         String currentMovie = movie.getPhoto();
-        String imageSize = getImageSize(getDisplayWidth()/3);
+        String imageSize = getImageSize(getDisplayWidth(mContext)/3);
 
         String url = MovieAdapter.IMAGE_URL_BASE + imageSize + currentMovie;
         Log.i("test", "url string is:" + url);
         //Picasso.with(this).load(url).into(mPoster);
-        Picasso.with(mPoster.getContext()).load(url).into(mPoster);
+        //Picasso.with(mPoster.getContext()).load(url).into(mPoster);
         //Picasso.with(holder.mMovieImageView.getContext()).load(url).into(holder.mMovieImageView);
-
+        Picasso.get().load(url).into(mPoster);
 
 
 

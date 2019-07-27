@@ -1,5 +1,6 @@
 package com.marklylebanks.popularmovies;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import static com.marklylebanks.popularmovies.MainActivity.getDisplayWidth;
-import static com.marklylebanks.popularmovies.MainActivity.getImageSize;
+import static com.marklylebanks.popularmovies.Utilities.getDisplayWidth;
+import static com.marklylebanks.popularmovies.Utilities.getImageSize;
 
 /**
  * Created by Mark on 9/2/2017.
@@ -19,9 +20,10 @@ import static com.marklylebanks.popularmovies.MainActivity.getImageSize;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
-    public final static String IMAGE_URL_BASE = "http://image.tmdb.org/t/p/";
+    public final static String IMAGE_URL_BASE = "https://image.tmdb.org/t/p/";
     String mImageSize;
     private final MovieAdapterOnClickHandler mClickHandler;
+    Context mContext;
 
 
 
@@ -31,9 +33,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         void onListItemClicked(int clickedItemIndex);
     }
 
-    public MovieAdapter(MovieAdapterOnClickHandler handler) {
+    public MovieAdapter(MovieAdapterOnClickHandler handler, Context context) {
         mClickHandler = handler;
-        mImageSize = getImageSize(getDisplayWidth()/2);
+        mContext = context;
+        mImageSize = getImageSize(getDisplayWidth(mContext)/2);
+
     }
 
 
@@ -71,7 +75,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         movieIdentifier = movieIdentifier.trim();
         String url = IMAGE_URL_BASE + mImageSize + movieIdentifier;
         Log.i("test", "onBindViewHolder() movie image URL: " + url);
-        Picasso.with(holder.mMovieImageView.getContext()).load(url).into(holder.mMovieImageView);
+        //Picasso.with(holder.mMovieImageView.getContext()).load(url).into(holder.mMovieImageView);
+        Picasso.get().load(url).into(holder.mMovieImageView);
     }
 
     @Override

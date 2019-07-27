@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static final String KEY_RELEASED = "release_date";
 
     public static ArrayList<Movie> mMovieList = new ArrayList<>();
-    private static Context mContext; // used by getDisplayWidth method
+    public Context mContext; // used by getDisplayWidth method
 
     private MoviesAsync mMoviesTask = null;
     private RecyclerView mRecyclerView;
@@ -65,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView = findViewById(R.id.rv_movies);
         mErrorView = findViewById(R.id.tv_error);
         mProgress = findViewById(R.id.pb_loading);
-        mMovieAdapter = new MovieAdapter(this);
+        mMovieAdapter = new MovieAdapter(this, mContext);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mRecyclerView.setAdapter(mMovieAdapter);
 
@@ -232,39 +231,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         }
     }
 
-    /*
-     * returns the largest usable image size based
-     * on the screen size of the device being used
-     */
-    public static String getImageSize(int columnSize) {
 
-        String size = "";
-        if (columnSize < 154) {
-            size = "w92";
-        } else if (columnSize < 185) {
-            size = "w154";
-        } else if (columnSize < 342) {
-            size = "w185";
-        } else if (columnSize < 500) {
-            size = "w342";
-        } else if (columnSize < 780) {
-            size = "w500";
-        } else {
-            size = "w780";
-        }
-        Log.i("test", "size is: " + size);
-        return size;
-    }
 
-    /*
-     * returns the width of the devices screen
-     *
-     * The idea to use displayMetrics came from a StackOverflow answer on how to set the number of
-     * columns in a gridLayout based on screen size.
-     */
-    public static int getDisplayWidth() {
-        DisplayMetrics displayMetrics = mContext.getResources().getDisplayMetrics();
-        Log.i("test", "display width is: " + (int) displayMetrics.widthPixels);
-        return (int) displayMetrics.widthPixels;
-    }
+
 }
