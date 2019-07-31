@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public URL getUrl() {
         Uri.Builder builder = new Uri.Builder();
         builder
-                .scheme("http")
+                .scheme("https")
                 .authority(KEY_AUTHORITY)
                 .appendPath("3")
                 .appendPath("movie")
@@ -135,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             url = new URL(builtUri);
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            Log.i("test", "malformed URL");
         }
         return url;
 
@@ -159,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 String date = film.getString(KEY_RELEASED);
 
                 Movie tempMovie = new Movie(title, poster, date, viewerRating, overView);
-                String movieTitle = tempMovie.getTitle();
                 mMovieList.add(tempMovie);
             }
         } catch (JSONException e) {
@@ -201,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             parseData(s);
             mMovieAdapter.notifyDataSetChanged();
             for (Movie movie : mMovieList) {
-                Log.i("test", "all movie titles in onPostExecute: " + movie.getTitle());
             }
         }
     } // end of MoviesAsync class
@@ -229,9 +226,5 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         } finally {
             urlConnection.disconnect();
         }
-    }
-
-
-
-
-}
+    }// end of getResponseFromHttpUrl function
+}// end of class

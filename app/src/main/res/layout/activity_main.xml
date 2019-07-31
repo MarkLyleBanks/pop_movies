@@ -36,7 +36,6 @@
         android:id="@+id/pb_loading"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_gravity="center"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"

@@ -2,7 +2,6 @@ package com.marklylebanks.popularmovies;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 public class Utilities {
 
@@ -26,7 +25,6 @@ public class Utilities {
         } else {
             size = "w780";
         }
-        Log.i("test", "size is: " + size);
         return size;
     }
 
@@ -38,7 +36,6 @@ public class Utilities {
      */
     public static int getDisplayWidth(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        Log.i("test", "display width is: " + (int) displayMetrics.widthPixels);
         return (int) displayMetrics.widthPixels;
     }
 

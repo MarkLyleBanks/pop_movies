@@ -57,7 +57,6 @@ public class MovieDetail extends AppCompatActivity {
         String currentMovie = movie.getPhoto();
         String imageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext)/3);
         String url = MovieAdapter.IMAGE_URL_BASE + imageSize + currentMovie;
-        Log.i("test", "url string is:" + url);
         Picasso.get().load(url).into(mPoster);
 
 

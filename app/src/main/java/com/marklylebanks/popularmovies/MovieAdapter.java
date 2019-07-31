@@ -1,7 +1,6 @@
 package com.marklylebanks.popularmovies;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         mClickHandler = handler;
         mContext = context;
        mImageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext)/2);
-       // mImageSize = "w500";
     }
 
 
@@ -67,12 +65,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
         Movie tempMovie = MainActivity.mMovieList.get(position);
-        Log.i("test", "onBindViewHolder() movie title: " + tempMovie.getTitle());
         String movieIdentifier = tempMovie.getPhoto();
         movieIdentifier = movieIdentifier.trim();
         String url = IMAGE_URL_BASE + mImageSize + movieIdentifier;
-        Log.i("test", "onBindViewHolder() movie image URL: " + url);
-        //Picasso.with(holder.mMovieImageView.getContext()).load(url).into(holder.mMovieImageView);
         Picasso.get().load(url).into(holder.mMovieImageView);
     }
 
