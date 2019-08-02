@@ -7,7 +7,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static final String KEY_AUTHORITY = "api.themoviedb.org";
     public static final String KEY_MOST_POPULAR = "popular";
     public static final String KEY_HIGHEST_RATED = "top_rated";
-    public static final String KEY_ACCESS_KEY = "c78be6308882fe1a55161ed04273afe1";
+    public static final String KEY_ACCESS_KEY = ""; // enter your key here
     public static final String KEY_RESULTS = "results";
     public static final String KEY_TITLE = "title";
     public static final String KEY_AVERAGE = "vote_average";
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * and stores those objects into the mMoviesList ArrayList
      */
     private void parseData(String s) {
-        Log.i("test", "start parseData()");
         try {
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(KEY_RESULTS);
