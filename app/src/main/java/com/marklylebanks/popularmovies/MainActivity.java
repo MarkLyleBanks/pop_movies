@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,8 +36,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static final String KEY_AUTHORITY = "api.themoviedb.org";
     public static final String KEY_MOST_POPULAR = "popular";
     public static final String KEY_HIGHEST_RATED = "top_rated";
-    public static final String KEY_ACCESS_KEY = ""; // enter your key here
+    public static final String KEY_ACCESS_KEY = "c78be6308882fe1a55161ed04273afe1"; // enter your key here
     public static final String KEY_RESULTS = "results";
+    public static final String KEY_ID = "id";
     public static final String KEY_TITLE = "title";
     public static final String KEY_AVERAGE = "vote_average";
     public static final String KEY_POSTER = "poster_path";
@@ -143,19 +145,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      * This method accepts a string in JSON format, parses the data, creates Movies objects,
      * and stores those objects into the mMoviesList ArrayList
      */
-    private void parseData(String s) {
+    private void parseMovieData(String s) {
         try {
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(KEY_RESULTS);
             for (int i = 0; i < results.length(); i++) {
                 JSONObject film = results.getJSONObject(i);
                 String viewerRating = film.getString(KEY_AVERAGE);
+                String id = film.getString(KEY_ID);
                 String title = film.getString(KEY_TITLE);
                 String poster = film.getString(KEY_POSTER);
                 String overView = film.getString(KEY_OVERVIEW);
                 String date = film.getString(KEY_RELEASED);
-
-                Movie tempMovie = new Movie(title, poster, date, viewerRating, overView);
+Log.i("json", " title: " + title + "  id: " + id);
+                Movie tempMovie = new Movie(id, title, poster, date, viewerRating, overView);
                 mMovieList.add(tempMovie);
             }
         } catch (JSONException e) {
@@ -194,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         @Override
         protected void onPostExecute(String s) {
             mProgress.setVisibility(View.INVISIBLE);
-            parseData(s);
+            parseMovieData(s);
             mMovieAdapter.notifyDataSetChanged();
             for (Movie movie : mMovieList) {
             }
