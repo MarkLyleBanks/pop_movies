@@ -1,10 +1,10 @@
 package com.marklylebanks.popularmovies;
 
-public class Trailers {
+public class Trailer {
     private String mName;
     private String mKey;
 
-    Trailers(String name, String key){
+    Trailer(String name, String key){
         mName = name;
         mKey = key;
     }

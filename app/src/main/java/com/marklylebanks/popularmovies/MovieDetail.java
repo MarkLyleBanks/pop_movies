@@ -13,20 +13,31 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class MovieDetail extends AppCompatActivity {
 
     public static String KEY_TRAILERS = "videos";
     public static String KEY_REVIEWS = "reviews";
+    public static String KEY_AUTHOR = "author";
+    public static String KEY_CONTENT = "content";
     public static String KEY_VIDEO_KEY = "key";
+    public static String KEY_NAME = "name";
+    public static String KEY_SITE = "site";
+    public static String KEY_TRAILER_TYPE = "type";
 
+    ArrayList<Trailer> mTrailerList = new ArrayList<>();
+    ArrayList<Review> mReviewList = new ArrayList<>();
     Movie mCurrentMovie;
     int position;
     String mId;
     Context mContext;
-    AsyncTask mDownloadDetails;
 
     TextView mErrorTextView, mTitle, mYear, mRating, mOverview;
     ImageView mPoster;
@@ -43,7 +54,6 @@ public class MovieDetail extends AppCompatActivity {
         mOverview = (TextView) findViewById(R.id.tv_overview);
         mPoster = (ImageView) findViewById(R.id.iv_poster);
         mContext = getApplicationContext();
-        mDownloadDetails = new DownloadDetails();
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
@@ -72,9 +82,10 @@ public class MovieDetail extends AppCompatActivity {
         //retrieve current movie id
         mId = mCurrentMovie.getId();
         String[] reviewArgs = {KEY_REVIEWS, mId};
-        String[] videoArgs = {KEY_TRAILERS, mId};
+        String[] trailerArgs = {KEY_TRAILERS, mId};
 
-        mDownloadDetails.execute(reviewArgs);
+        new DownloadDetails().execute(reviewArgs);
+        new DownloadDetails().execute(trailerArgs);
 
     }
 
@@ -100,14 +111,59 @@ public class MovieDetail extends AppCompatActivity {
         @Override
         protected void onPostExecute(String[] s) {
             String JSONtype = s[0];
+            String JSONString = s[1];
             if (JSONtype.equals(KEY_REVIEWS)) {
                 Log.i("json", "is a review");
+                parseReviews(JSONString);
             } else {
                 Log.i("json", "is a trailer");
+                parseTrailers(JSONString);
             }
-    }// end of onPostExecute
-}// end of async DownloadDetails
+        }// end of onPostExecute
+    }// end of async DownloadDetails
 
+    private void parseReviews(String s) {
+        try {
+            JSONObject data = new JSONObject(s);
+            JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
+            Log.i("Reviewsjson", "results length is: " + results.length());
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject review = results.getJSONObject(i);
+                String author = review.getString(KEY_AUTHOR);
+                String content = review.getString(KEY_CONTENT);
+                Log.i("Reviewsjson", "content is: " + content.substring(0, 20));
+                Log.i("Reviewsjson", "author is: " + author);
+                Review tempReview = new Review(content, author);
+                mReviewList.add(tempReview);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
+    private void parseTrailers(String s) {
+        try {
+            JSONObject data = new JSONObject(s);
+            JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
+            for (int i = 0; i < results.length(); i++) {
+                JSONObject trailer = results.getJSONObject(i);
+                String key = trailer.getString(KEY_VIDEO_KEY);
+                String name = trailer.getString(KEY_NAME);
+                String site = trailer.getString(KEY_SITE);
+                String type = trailer.getString(KEY_TRAILER_TYPE);
+                Log.i("Trailersjson", "key is: " + key);
+                Log.i("Trailersjson", "name is: " + name);
+                Log.i("Trailersjson", "site is: " + site);
+                Log.i("Trailersjson", "type is: " + type);
+                if (site.equals("YouTube") && type.equals("Trailer")) {
+                    Trailer tempTrailer = new Trailer(name, key);
+                    mTrailerList.add(tempTrailer);
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.i("Trailersjson", "number of trailers is: " + mTrailerList.size());
+    }
 }// end of MovieDetail activity
 

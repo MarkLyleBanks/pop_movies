@@ -1,10 +1,10 @@
 package com.marklylebanks.popularmovies;
 
-public class Reviews {
+public class Review {
     private String mContent;
     private String mAuthor;
 
-    Reviews(String content, String author){
+    Review(String content, String author){
         mContent = content;
         mAuthor = author;
     }

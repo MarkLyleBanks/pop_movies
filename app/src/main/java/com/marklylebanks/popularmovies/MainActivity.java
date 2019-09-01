@@ -24,10 +24,8 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    public static final String KEY_AUTHORITY = "api.themoviedb.org";
     public static final String KEY_MOST_POPULAR = "popular";
     public static final String KEY_HIGHEST_RATED = "top_rated";
-    public static final String KEY_ACCESS_KEY = "c78be6308882fe1a55161ed04273afe1"; // enter your key here
     public static final String KEY_RESULTS = "results";
     public static final String KEY_ID = "id";
     public static final String KEY_TITLE = "title";
