@@ -4,18 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -110,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 String poster = film.getString(KEY_POSTER);
                 String overView = film.getString(KEY_OVERVIEW);
                 String date = film.getString(KEY_RELEASED);
-Log.i("json", " title: " + title + "  id: " + id);
+                //Log.i("json", " title: " + title + "  id: " + id);
                 Movie tempMovie = new Movie(id, title, poster, date, viewerRating, overView);
                 mMovieList.add(tempMovie);
             }
@@ -152,8 +154,6 @@ Log.i("json", " title: " + title + "  id: " + id);
             mProgress.setVisibility(View.INVISIBLE);
             parseMovieData(s);
             mMovieAdapter.notifyDataSetChanged();
-            for (Movie movie : mMovieList) {
-            }
         }
     } // end of MoviesAsync class
 

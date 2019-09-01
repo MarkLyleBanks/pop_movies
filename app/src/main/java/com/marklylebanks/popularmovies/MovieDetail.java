@@ -2,6 +2,7 @@ package com.marklylebanks.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,11 +13,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.net.URL;
+
 public class MovieDetail extends AppCompatActivity {
 
-    Movie movie;
+    public static String KEY_TRAILERS = "videos";
+    public static String KEY_REVIEWS = "reviews";
+    public static String KEY_VIDEO_KEY = "key";
+
+    Movie mCurrentMovie;
     int position;
+    String mId;
     Context mContext;
+    AsyncTask mDownloadDetails;
 
     TextView mErrorTextView, mTitle, mYear, mRating, mOverview;
     ImageView mPoster;
@@ -33,34 +43,71 @@ public class MovieDetail extends AppCompatActivity {
         mOverview = (TextView) findViewById(R.id.tv_overview);
         mPoster = (ImageView) findViewById(R.id.iv_poster);
         mContext = getApplicationContext();
+        mDownloadDetails = new DownloadDetails();
 
         Intent intent = getIntent();
         position = intent.getIntExtra("position", -1);
 
-        if(position == -1){
+        if (position == -1) {
             mErrorTextView.setVisibility(View.VISIBLE);
             return;
         }
 
-        movie = MainActivity.mMovieList.get(position);
+        mCurrentMovie = MainActivity.mMovieList.get(position);
 
-        String yearString = movie.getReleaseDate();
-        Log.i("test", "yearString: " + yearString);
+        // set the Views with the current movie data
+        String yearString = mCurrentMovie.getReleaseDate();
         int yearEnd = yearString.indexOf('-');
-        Log.i("test", "yearEnd: " + yearEnd);
         yearString = yearString.substring(0, yearEnd);
         mYear.setText(yearString);
-        mTitle.setText(movie.getTitle());
-        String ratingString = movie.getViewerRating() + " / 10";
+        mTitle.setText(mCurrentMovie.getTitle());
+        String ratingString = mCurrentMovie.getViewerRating() + " / 10";
         mRating.setText(ratingString);
-        mOverview.setText(movie.getOverview());
-        String currentMovie = movie.getPhoto();
-        String imageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext)/3);
+        mOverview.setText(mCurrentMovie.getOverview());
+        String currentMovie = mCurrentMovie.getPhoto();
+        String imageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext) / 3);
         String url = MovieAdapter.IMAGE_URL_BASE + imageSize + currentMovie;
         Picasso.get().load(url).into(mPoster);
 
+        //retrieve current movie id
+        mId = mCurrentMovie.getId();
+        String[] reviewArgs = {KEY_REVIEWS, mId};
+        String[] videoArgs = {KEY_TRAILERS, mId};
 
+        mDownloadDetails.execute(reviewArgs);
 
     }
-}
+
+    class DownloadDetails extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected String[] doInBackground(String... strings) {
+            String response = "";
+
+            if (Utilities.isOnline(MovieDetail.this)) {
+                try {
+                    URL url = Utilities.getUrl(strings[0], strings[1]);
+                    Log.i("json", "in if isOnline url is: " + url);
+                    response = Utilities.getResponseFromHttpUrl(Utilities.getUrl(strings[0], strings[1]));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            String[] returnData = {strings[0], response};
+            return returnData;
+        }// end of doInBackground
+
+        @Override
+        protected void onPostExecute(String[] s) {
+            String JSONtype = s[0];
+            if (JSONtype.equals(KEY_REVIEWS)) {
+                Log.i("json", "is a review");
+            } else {
+                Log.i("json", "is a trailer");
+            }
+    }// end of onPostExecute
+}// end of async DownloadDetails
+
+
+}// end of MovieDetail activity
 

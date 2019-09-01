@@ -87,7 +87,32 @@ public class Utilities {
             e.printStackTrace();
         }
         return url;
+    }
 
+    /**
+     * This overloaded method accepts a string that determines the type of search,
+     * a string for a movie id, and builds the correct URL
+     */
+    public static URL getUrl(String endPoint, String id) {
+        Uri.Builder builder = new Uri.Builder();
+        builder
+                .scheme("https")
+                .authority(KEY_AUTHORITY)
+                .appendPath("3")
+                .appendPath("movie")
+                .appendPath(id)
+                .appendPath(endPoint)
+                .appendQueryParameter("api_key", KEY_ACCESS_KEY);
+
+        String builtUri = builder.build().toString();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 
     /**
