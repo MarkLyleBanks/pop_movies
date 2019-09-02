@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
@@ -32,15 +34,18 @@ public class MovieDetail extends AppCompatActivity {
     public static String KEY_SITE = "site";
     public static String KEY_TRAILER_TYPE = "type";
 
-    ArrayList<Trailer> mTrailerList = new ArrayList<>();
-    ArrayList<Review> mReviewList = new ArrayList<>();
+    public static ArrayList<Trailer> mTrailerList = new ArrayList<>();
+    public static ArrayList<Review> mReviewList = new ArrayList<>();
     Movie mCurrentMovie;
     int position;
     String mId;
     Context mContext;
+    ReviewAdapter mReviewAdapter;
 
     TextView mErrorTextView, mTitle, mYear, mRating, mOverview;
     ImageView mPoster;
+    RecyclerView mReviewRecycler, mTrailerRecycler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +92,12 @@ public class MovieDetail extends AppCompatActivity {
         new DownloadDetails().execute(reviewArgs);
         new DownloadDetails().execute(trailerArgs);
 
+        mReviewAdapter = new ReviewAdapter();
+        mReviewRecycler = findViewById(R.id.rv_reviews);
+
+        mReviewRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mReviewRecycler.setAdapter(mReviewAdapter);
+
     }
 
     class DownloadDetails extends AsyncTask<String, Void, String[]> {
@@ -124,6 +135,7 @@ public class MovieDetail extends AppCompatActivity {
 
     private void parseReviews(String s) {
         try {
+            mReviewList.clear();
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
             Log.i("Reviewsjson", "results length is: " + results.length());
@@ -136,6 +148,7 @@ public class MovieDetail extends AppCompatActivity {
                 Review tempReview = new Review(content, author);
                 mReviewList.add(tempReview);
             }
+            mReviewAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
