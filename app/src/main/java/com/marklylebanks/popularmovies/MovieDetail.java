@@ -2,6 +2,7 @@ package com.marklylebanks.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +24,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class MovieDetail extends AppCompatActivity {
+public class MovieDetail extends AppCompatActivity implements TrailerAdapter.TrailerAdapterOnClickHandler {
 
     public static String KEY_TRAILERS = "videos";
     public static String KEY_REVIEWS = "reviews";
@@ -41,6 +42,7 @@ public class MovieDetail extends AppCompatActivity {
     String mId;
     Context mContext;
     ReviewAdapter mReviewAdapter;
+    TrailerAdapter mTrailerAdapter;
 
     TextView mErrorTextView, mTitle, mYear, mRating, mOverview;
     ImageView mPoster;
@@ -94,10 +96,22 @@ public class MovieDetail extends AppCompatActivity {
 
         mReviewAdapter = new ReviewAdapter();
         mReviewRecycler = findViewById(R.id.rv_reviews);
-
         mReviewRecycler.setLayoutManager(new LinearLayoutManager(this));
         mReviewRecycler.setAdapter(mReviewAdapter);
 
+        mTrailerAdapter = new TrailerAdapter(this, mContext);
+        mTrailerRecycler = findViewById(R.id.rv_trailers);
+        mTrailerRecycler.setLayoutManager(new LinearLayoutManager(this));
+        mTrailerRecycler.setAdapter(mTrailerAdapter);
+    }
+
+    @Override
+    public void onTrailerItemClicked(int clickedItemIndex) {
+        Trailer tempTrailer = mTrailerList.get(clickedItemIndex);
+        String key = TrailerAdapter.TRAILER_URI_BASE + tempTrailer.getKey();
+        Uri uri = Uri.parse(key);
+        Intent trailerIntent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(trailerIntent);
     }
 
     class DownloadDetails extends AsyncTask<String, Void, String[]> {
@@ -156,6 +170,7 @@ public class MovieDetail extends AppCompatActivity {
 
     private void parseTrailers(String s) {
         try {
+            mTrailerList.clear();
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
             for (int i = 0; i < results.length(); i++) {
@@ -173,6 +188,7 @@ public class MovieDetail extends AppCompatActivity {
                     mTrailerList.add(tempTrailer);
                 }
             }
+            mTrailerAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
