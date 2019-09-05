@@ -5,7 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
@@ -22,22 +24,22 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     Context mContext;
 
 
-
-   /*
-   * the interface that allows the the View.onclick to be set to each item in the recycler view
-   */ public interface MovieAdapterOnClickHandler {
+    /*
+     * the interface that allows the the View.onclick to be set to each item in the recycler view
+     */ public interface MovieAdapterOnClickHandler {
         void onListItemClicked(int clickedItemIndex);
     }
 
     public MovieAdapter(MovieAdapterOnClickHandler handler, Context context) {
         mClickHandler = handler;
         mContext = context;
-       mImageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext)/2);
+        mImageSize = Utilities.getImageSize(Utilities.getDisplayWidth(mContext) / 2);
     }
 
 
     @Override
-    public MovieAdapter.MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    @NonNull
+    public MovieAdapter.MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.main_item_layout, parent, false);
         return new MovieViewHolder(view);
@@ -46,11 +48,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public ImageView mMovieImageView;
+        //temp
+        public TextView mTempView;
+
 
         public MovieViewHolder(View itemView) {
             super(itemView);
-            mMovieImageView =  itemView.findViewById(R.id.iv_movie_image);
+            mMovieImageView = itemView.findViewById(R.id.iv_movie_image);
             itemView.setOnClickListener(this);
+            // temp
+            mTempView = itemView.findViewById(R.id.temp_id);
         }
 
         @Override
@@ -63,12 +70,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      *Retrieves the Movie object that corresponds to the current position
      */
     @Override
-    public void onBindViewHolder(MovieAdapter.MovieViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MovieAdapter.MovieViewHolder holder, int position) {
         Movie tempMovie = MainActivity.mMovieList.get(position);
         String movieIdentifier = tempMovie.getPhoto();
         movieIdentifier = movieIdentifier.trim();
         String url = IMAGE_URL_BASE + mImageSize + movieIdentifier;
         Picasso.get().load(url).into(holder.mMovieImageView);
+
+        // temp
+        String id = tempMovie.getId();
+        holder.mTempView.setText(id);
+
     }
 
     @Override

@@ -125,6 +125,13 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
                     URL url = Utilities.getUrl(strings[0], strings[1]);
                     Log.i("json", "in if isOnline url is: " + url);
                     response = Utilities.getResponseFromHttpUrl(Utilities.getUrl(strings[0], strings[1]));
+                    if (strings[0].equals(KEY_REVIEWS)) {
+                        Log.i("json", "is a review");
+                        parseReviews(response);
+                    } else {
+                        Log.i("json", "is a trailer");
+                        parseTrailers(response);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -137,12 +144,15 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
         protected void onPostExecute(String[] s) {
             String JSONtype = s[0];
             String JSONString = s[1];
+            Log.i("json", "in onPostExecute JSONString is: " + JSONString);
             if (JSONtype.equals(KEY_REVIEWS)) {
                 Log.i("json", "is a review");
-                parseReviews(JSONString);
+               // parseReviews(JSONString);
+                mReviewAdapter.notifyDataSetChanged();
             } else {
                 Log.i("json", "is a trailer");
-                parseTrailers(JSONString);
+               // parseTrailers(JSONString);
+                mTrailerAdapter.notifyDataSetChanged();
             }
         }// end of onPostExecute
     }// end of async DownloadDetails
@@ -162,7 +172,6 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
                 Review tempReview = new Review(content, author);
                 mReviewList.add(tempReview);
             }
-            mReviewAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -175,20 +184,20 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
             for (int i = 0; i < results.length(); i++) {
                 JSONObject trailer = results.getJSONObject(i);
-                String key = trailer.getString(KEY_VIDEO_KEY);
-                String name = trailer.getString(KEY_NAME);
+
                 String site = trailer.getString(KEY_SITE);
                 String type = trailer.getString(KEY_TRAILER_TYPE);
-                Log.i("Trailersjson", "key is: " + key);
-                Log.i("Trailersjson", "name is: " + name);
-                Log.i("Trailersjson", "site is: " + site);
-                Log.i("Trailersjson", "type is: " + type);
+                //Log.i("Trailersjson", "key is: " + key);
+                //Log.i("Trailersjson", "name is: " + name);
+                //Log.i("Trailersjson", "site is: " + site);
+                //Log.i("Trailersjson", "type is: " + type);
                 if (site.equals("YouTube") && type.equals("Trailer")) {
+                    String key = trailer.getString(KEY_VIDEO_KEY);
+                    String name = trailer.getString(KEY_NAME);
                     Trailer tempTrailer = new Trailer(name, key);
                     mTrailerList.add(tempTrailer);
                 }
             }
-            mTrailerAdapter.notifyDataSetChanged();
         } catch (JSONException e) {
             e.printStackTrace();
         }
