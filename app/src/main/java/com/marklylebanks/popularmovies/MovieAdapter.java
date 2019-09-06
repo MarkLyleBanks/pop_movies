@@ -56,8 +56,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
             super(itemView);
             mMovieImageView = itemView.findViewById(R.id.iv_movie_image);
             itemView.setOnClickListener(this);
-            // temp
-            mTempView = itemView.findViewById(R.id.temp_id);
         }
 
         @Override
@@ -77,9 +75,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         String url = IMAGE_URL_BASE + mImageSize + movieIdentifier;
         Picasso.get().load(url).into(holder.mMovieImageView);
 
-        // temp
-        String id = tempMovie.getId();
-        holder.mTempView.setText(id);
+
 
     }
 
