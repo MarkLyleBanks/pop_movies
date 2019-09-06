@@ -22,73 +22,75 @@ public class Movie {
 
 
     @Ignore
-    public Movie(String movieId, String title, String photo, String date, String rating, String overview) {
+    public Movie(String movieId, String title, String photo, String releaseDate, String viewerRating, String overview) {
         this.movieId = movieId;
         this.title = title;
         this.photo = photo;
-        releaseDate = date;
-        viewerRating = rating;
+        this.releaseDate = releaseDate ;
+        this.viewerRating = viewerRating;
         this.overview = overview;
     }
 
-    public Movie(int id, String movieId, String title, String photo, String date, String rating, String overview) {
+    public Movie(int id, String movieId, String title, String photo, String releaseDate, String viewerRating, String overview) {
         this.id = id;
         this.movieId = movieId;
         this.title = title;
         this.photo = photo;
-        releaseDate = date;
-        viewerRating = rating;
+        this.releaseDate = releaseDate ;
+        this.viewerRating = viewerRating;
         this.overview = overview;
     }
 
-    public int getId(){
+    public int getId() {
         return id;
-    }
-
-    public String getMovieId() { return movieId; }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getPhoto() {
-        return photo;
-    }
-
-    public String getReleaseDate() {
-        return releaseDate;
-    }
-
-    public String getViewerRating() {
-        return viewerRating;
-    }
-
-    public String getOverview() {
-        return overview;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
+    public String getMovieId() {
+        return movieId;
+    }
+
     public void setMovieId(String movieId) {
         this.movieId = movieId;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getPhoto() {
+        return photo;
+    }
+
     public void setPhoto(String photo) {
         this.photo = photo;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
     }
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
     }
 
+    public String getViewerRating() {
+        return viewerRating;
+    }
+
     public void setViewerRating(String viewerRating) {
         this.viewerRating = viewerRating;
+    }
+
+    public String getOverview() {
+        return overview;
     }
 
     public void setOverview(String overview) {
