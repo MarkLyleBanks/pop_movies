@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class Utilities {
 
     public static final String KEY_AUTHORITY = "api.themoviedb.org";
-    public static final String KEY_ACCESS_KEY = ""; // enter your key here
+    public static final String KEY_ACCESS_KEY = "c78be6308882fe1a55161ed04273afe1"; // enter your key here
 
     /*
      * returns the largest usable image size based

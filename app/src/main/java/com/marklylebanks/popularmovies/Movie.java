@@ -2,42 +2,42 @@ package com.marklylebanks.popularmovies;
 
 
 public class Movie {
-    private String mId;
-    private String mTitle;
-    private String mPhoto;
-    private String mReleaseDate;
-    private String mViewerRating;
-    private String mOverview;
+    private String movieId;
+    private String title;
+    private String photo;
+    private String releaseDate;
+    private String viewerRating;
+    private String overview;
 
-    public Movie(String id, String title, String photo, String date, String rating, String overview) {
-        mId = id;
-        mTitle = title;
-        mPhoto = photo;
-        mReleaseDate = date;
-        mViewerRating = rating;
-        mOverview = overview;
+    public Movie(String movieId, String title, String photo, String date, String rating, String overview) {
+        this.movieId = movieId;
+        this.title = title;
+        this.photo = photo;
+        releaseDate = date;
+        viewerRating = rating;
+        this.overview = overview;
     }
 
-    public String getId() { return mId; }
+    public String getMovieId() { return movieId; }
 
     public String getTitle() {
-        return mTitle;
+        return title;
     }
 
     public String getPhoto() {
-        return mPhoto;
+        return photo;
     }
 
     public String getReleaseDate() {
-        return mReleaseDate;
+        return releaseDate;
     }
 
     public String getViewerRating() {
-        return mViewerRating;
+        return viewerRating;
     }
 
     public String getOverview() {
-        return mOverview;
+        return overview;
     }
 
 }

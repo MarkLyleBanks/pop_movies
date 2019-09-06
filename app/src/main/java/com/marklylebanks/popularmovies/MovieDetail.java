@@ -87,7 +87,7 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
         Picasso.get().load(url).into(mPoster);
 
         //retrieve current movie id
-        mId = mCurrentMovie.getId();
+        mId = mCurrentMovie.getMovieId();
         String[] reviewArgs = {KEY_REVIEWS, mId};
         String[] trailerArgs = {KEY_TRAILERS, mId};
 
