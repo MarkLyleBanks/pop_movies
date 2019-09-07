@@ -21,6 +21,8 @@ public abstract class FavoritesDatabase extends RoomDatabase {
                 Log.d(LOG_TAG, "Creating ne database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         FavoritesDatabase.class, FavoritesDatabase.DATABASE_NAME)
+                        //remove for production
+                        .allowMainThreadQueries()
                         .build();
             }
         }

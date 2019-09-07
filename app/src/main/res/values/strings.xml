@@ -9,4 +9,7 @@
     <string name="movie_data_not_found">Movie Data Not Found</string>
     <string name="review_label">Reviews</string>
     <string name="trailer_label">Trailers</string>
+    <string name="favorites">Favorites</string>
+    <string name="delete">del</string>
+    <string name="add">add</string>
 </resources>

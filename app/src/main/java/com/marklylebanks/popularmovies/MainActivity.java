@@ -20,12 +20,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
     public static final String KEY_MOST_POPULAR = "popular";
     public static final String KEY_HIGHEST_RATED = "top_rated";
+    public static final String KEY_FAVORITES = "favorites";
     public static final String KEY_RESULTS = "results";
     public static final String KEY_ID = "id";
     public static final String KEY_TITLE = "title";
@@ -33,16 +35,21 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static final String KEY_POSTER = "poster_path";
     public static final String KEY_OVERVIEW = "overview";
     public static final String KEY_RELEASED = "release_date";
+    public static final String KEY_POSITION = "position";
+    public static final String KEY_MOVIE_LIST_TYPE = "list_type";
 
-    public static ArrayList<Movie> mMovieList = new ArrayList<>();
+    public static List<Movie> mMovieList = new ArrayList<>();
     public Context mContext; // used by getDisplayWidth method
+
+    private FavoritesDatabase mDb;
 
     private MoviesAsync mMoviesTask = null;
     private RecyclerView mRecyclerView;
     private TextView mErrorView;
     private ProgressBar mProgress;
-    private MovieAdapter mMovieAdapter;
-    private String mSelectedSort = KEY_MOST_POPULAR;
+    public static MovieAdapter mMovieAdapter;
+    private String mMovieListType = KEY_MOST_POPULAR;
+
 
 
     @Override
@@ -51,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         setContentView(R.layout.activity_main);
         mContext = getApplicationContext();
 
+        mDb = FavoritesDatabase.getInstance(getApplicationContext());
+
         mRecyclerView = findViewById(R.id.rv_movies);
         mErrorView = findViewById(R.id.tv_error);
         mProgress = findViewById(R.id.pb_loading);
@@ -58,7 +67,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        loadMovies();
+        if(mMovieList.size() == 0) {
+            loadMovies();
+        }else {mErrorView.setVisibility(View.INVISIBLE);}
 
 
     }
@@ -73,12 +84,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_popular:
-                mSelectedSort = KEY_MOST_POPULAR;
+                mMovieListType = KEY_MOST_POPULAR;
                 loadMovies();
                 break;
             case R.id.menu_highest_rated:
-                mSelectedSort = KEY_HIGHEST_RATED;
+                mMovieListType = KEY_HIGHEST_RATED;
                 loadMovies();
+                break;
+            case R.id.menu_favorites:
+                mMovieListType = KEY_FAVORITES;
+                mMovieList = mDb.movieDao().loadAllTasks();
+                mMovieAdapter.notifyDataSetChanged();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -122,7 +138,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public void onListItemClicked(int clickedItemIndex) {
         Intent intent = new Intent(this, MovieDetail.class);
-        intent.putExtra("position", clickedItemIndex);
+        intent.putExtra(KEY_POSITION, clickedItemIndex);
+        intent.putExtra(KEY_MOVIE_LIST_TYPE, mMovieListType);
         this.startActivity(intent);
 
     }
@@ -133,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         protected String doInBackground(Void... voids) {
             String response = "";
             try {
-                response = Utilities.getResponseFromHttpUrl(Utilities.getUrl(mSelectedSort));
+                response = Utilities.getResponseFromHttpUrl(Utilities.getUrl(mMovieListType));
             } catch (IOException e) {
                 e.printStackTrace();
             }

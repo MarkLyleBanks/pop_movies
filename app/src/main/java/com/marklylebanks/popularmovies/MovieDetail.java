@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,11 +36,14 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
     public static String KEY_SITE = "site";
     public static String KEY_TRAILER_TYPE = "type";
 
+    private FavoritesDatabase mDb;
+
     public static ArrayList<Trailer> mTrailerList = new ArrayList<>();
     public static ArrayList<Review> mReviewList = new ArrayList<>();
+
     Movie mCurrentMovie;
-    int position;
-    String mId;
+    int mPosition;
+    String mId, mListType;
     Context mContext;
     ReviewAdapter mReviewAdapter;
     TrailerAdapter mTrailerAdapter;
@@ -48,11 +52,14 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
     ImageView mPoster;
     RecyclerView mReviewRecycler, mTrailerRecycler;
 
+    Button mFavButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        mDb = FavoritesDatabase.getInstance(getApplicationContext());
 
         mErrorTextView = (TextView) findViewById(R.id.tv_detail_error);
         mTitle = (TextView) findViewById(R.id.tv_title);
@@ -60,17 +67,24 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
         mRating = (TextView) findViewById(R.id.tv_rating);
         mOverview = (TextView) findViewById(R.id.tv_overview);
         mPoster = (ImageView) findViewById(R.id.iv_poster);
+        mFavButton = findViewById(R.id.favorite_button);
         mContext = getApplicationContext();
 
         Intent intent = getIntent();
-        position = intent.getIntExtra("position", -1);
+        mPosition = intent.getIntExtra(MainActivity.KEY_POSITION, -1);
+        mListType = intent.getStringExtra(MainActivity.KEY_MOVIE_LIST_TYPE);
 
-        if (position == -1) {
+        if (mPosition == -1) {
             mErrorTextView.setVisibility(View.VISIBLE);
             return;
         }
 
-        mCurrentMovie = MainActivity.mMovieList.get(position);
+        if (mListType.equals(MainActivity.KEY_FAVORITES)){
+            mFavButton.setText(getResources().getString(R.string.delete));
+        }else{
+            mFavButton.setText(getResources().getString(R.string.add));
+        }
+        mCurrentMovie = MainActivity.mMovieList.get(mPosition);
 
         // set the Views with the current movie data
         String yearString = mCurrentMovie.getReleaseDate();
@@ -112,6 +126,17 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
         Uri uri = Uri.parse(key);
         Intent trailerIntent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(trailerIntent);
+    }
+
+    public void favoriteButtonClicked(View view) {
+        if (mListType.equals(MainActivity.KEY_FAVORITES)) {
+            mDb.movieDao().deleteMovie(mCurrentMovie);
+            MainActivity.mMovieList = mDb.movieDao().loadAllTasks();
+            MainActivity.mMovieAdapter.notifyDataSetChanged();
+            finish();
+        } else {
+            mDb.movieDao().insertTask(mCurrentMovie);
+        }
     }
 
     class DownloadDetails extends AsyncTask<String, Void, String[]> {
