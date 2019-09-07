@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private String mMovieListType = KEY_MOST_POPULAR;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +66,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mRecyclerView.setAdapter(mMovieAdapter);
 
-        if(mMovieList.size() == 0) {
+        if (mMovieList.size() == 0) {
             loadMovies();
-        }else {mErrorView.setVisibility(View.INVISIBLE);}
+        } else {
+            mErrorView.setVisibility(View.INVISIBLE);
+        }
 
 
     }
@@ -93,8 +94,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 break;
             case R.id.menu_favorites:
                 mMovieListType = KEY_FAVORITES;
-                mMovieList = mDb.movieDao().loadAllTasks();
-                mMovieAdapter.notifyDataSetChanged();
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMovieList = mDb.movieDao().loadAllTasks();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMovieAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                });
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -171,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mMovieAdapter.notifyDataSetChanged();
         }
     } // end of MoviesAsync class
-
 
 
 }// end of class

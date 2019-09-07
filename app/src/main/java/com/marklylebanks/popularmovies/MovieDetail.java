@@ -130,12 +130,28 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
 
     public void favoriteButtonClicked(View view) {
         if (mListType.equals(MainActivity.KEY_FAVORITES)) {
-            mDb.movieDao().deleteMovie(mCurrentMovie);
-            MainActivity.mMovieList = mDb.movieDao().loadAllTasks();
-            MainActivity.mMovieAdapter.notifyDataSetChanged();
-            finish();
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().deleteMovie(mCurrentMovie);
+                    MainActivity.mMovieList = mDb.movieDao().loadAllTasks();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            MainActivity.mMovieAdapter.notifyDataSetChanged();
+                        }
+                    });
+                    finish();
+                }
+            });
         } else {
-            mDb.movieDao().insertTask(mCurrentMovie);
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    mDb.movieDao().insertTask(mCurrentMovie);
+                }
+            });
+
         }
     }
 
