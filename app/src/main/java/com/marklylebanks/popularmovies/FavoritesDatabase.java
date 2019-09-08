@@ -29,5 +29,5 @@ public abstract class FavoritesDatabase extends RoomDatabase {
         return sInstance;
     }
 
-    public abstract MovieDao movieDao();
+    public abstract MovieDao movieDao(); // Needed by Room
 }

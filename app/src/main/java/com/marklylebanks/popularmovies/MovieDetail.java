@@ -134,16 +134,10 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
                 @Override
                 public void run() {
                     mDb.movieDao().deleteMovie(mCurrentMovie);
-                    MainActivity.mMovieList = mDb.movieDao().loadAllTasks();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            MainActivity.mMovieAdapter.notifyDataSetChanged();
-                        }
-                    });
-                    finish();
                 }
             });
+            Utilities.loadFavoritesFromDatabase(MovieDetail.this, mDb);
+            finish();
         } else {
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override

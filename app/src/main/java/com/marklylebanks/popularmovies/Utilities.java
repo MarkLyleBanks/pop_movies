@@ -6,11 +6,16 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.util.DisplayMetrics;
 
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -139,4 +144,15 @@ public class Utilities {
         }
     }// end of getResponseFromHttpUrl function
 
+
+    public static void loadFavoritesFromDatabase(LifecycleOwner owner, FavoritesDatabase mDb) {
+        LiveData<List<Movie>> movieList = mDb.movieDao().loadAllTasks();
+        movieList.observe(owner, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                MainActivity.mMovieList = movies;
+                MainActivity.mMovieAdapter.notifyDataSetChanged();
+            }
+        });
+    }
 }

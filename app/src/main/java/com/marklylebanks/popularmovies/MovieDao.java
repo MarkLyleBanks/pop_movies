@@ -1,5 +1,6 @@
 package com.marklylebanks.popularmovies;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -12,7 +13,7 @@ import java.util.List;
 @Dao
 public interface MovieDao {
     @Query("SELECT * FROM favorite_movies")
-    List<Movie> loadAllTasks();
+    LiveData<List<Movie>> loadAllTasks();
 
     @Insert void insertTask(Movie movie);
 

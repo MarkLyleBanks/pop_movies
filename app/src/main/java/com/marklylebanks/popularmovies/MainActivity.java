@@ -94,24 +94,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 break;
             case R.id.menu_favorites:
                 mMovieListType = KEY_FAVORITES;
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMovieList = mDb.movieDao().loadAllTasks();
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mMovieAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                });
+
+                Utilities.loadFavoritesFromDatabase(this, mDb);
                 break;
             default:
                 return super.onOptionsItemSelected(item);
         }
         return true;
     }
+
 
     private void loadMovies() {
         mMovieList.clear();
