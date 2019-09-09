@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mRecyclerView.setAdapter(mMovieAdapter);
 
         if (mMovieList.size() == 0) {
+            mMovieListType = KEY_MOST_POPULAR;
             loadMovies();
         } else {
             mErrorView.setVisibility(View.INVISIBLE);
@@ -94,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 break;
             case R.id.menu_favorites:
                 mMovieListType = KEY_FAVORITES;
-
                 Utilities.loadFavoritesFromDatabase(this, mDb);
                 break;
             default:

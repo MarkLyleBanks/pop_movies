@@ -79,9 +79,9 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             return;
         }
 
-        if (mListType.equals(MainActivity.KEY_FAVORITES)){
+        if (mListType.equals(MainActivity.KEY_FAVORITES)) {
             mFavButton.setText(getResources().getString(R.string.delete));
-        }else{
+        } else {
             mFavButton.setText(getResources().getString(R.string.add));
         }
         mCurrentMovie = MainActivity.mMovieList.get(mPosition);
@@ -120,6 +120,12 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("movie_detail", "in on destroy");
+    }
+
+    @Override
     public void onTrailerItemClicked(int clickedItemIndex) {
         Trailer tempTrailer = mTrailerList.get(clickedItemIndex);
         String key = TrailerAdapter.TRAILER_URI_BASE + tempTrailer.getKey();
@@ -136,7 +142,7 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
                     mDb.movieDao().deleteMovie(mCurrentMovie);
                 }
             });
-            Utilities.loadFavoritesFromDatabase(MovieDetail.this, mDb);
+            Utilities.loadFavoritesFromDatabase(this, mDb);
             finish();
         } else {
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
@@ -182,11 +188,11 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             Log.i("json", "in onPostExecute JSONString is: " + JSONString);
             if (JSONtype.equals(KEY_REVIEWS)) {
                 Log.i("json", "is a review");
-               // parseReviews(JSONString);
+                // parseReviews(JSONString);
                 mReviewAdapter.notifyDataSetChanged();
             } else {
                 Log.i("json", "is a trailer");
-               // parseTrailers(JSONString);
+                // parseTrailers(JSONString);
                 mTrailerAdapter.notifyDataSetChanged();
             }
         }// end of onPostExecute
@@ -197,15 +203,12 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             mReviewList.clear();
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
-            Log.i("Reviewsjson", "results length is: " + results.length());
+
             for (int i = 0; i < results.length(); i++) {
                 JSONObject review = results.getJSONObject(i);
                 String author = review.getString(KEY_AUTHOR);
                 String content = review.getString(KEY_CONTENT);
-                Log.i("Reviewsjson", "content is: " + content.substring(0, 20));
-                Log.i("Reviewsjson", "author is: " + author);
-                Review tempReview = new Review(content, author);
-                mReviewList.add(tempReview);
+                 mReviewList.add(new Review(content, author));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -217,20 +220,18 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             mTrailerList.clear();
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(MainActivity.KEY_RESULTS);
+
             for (int i = 0; i < results.length(); i++) {
+
                 JSONObject trailer = results.getJSONObject(i);
 
                 String site = trailer.getString(KEY_SITE);
                 String type = trailer.getString(KEY_TRAILER_TYPE);
-                //Log.i("Trailersjson", "key is: " + key);
-                //Log.i("Trailersjson", "name is: " + name);
-                //Log.i("Trailersjson", "site is: " + site);
-                //Log.i("Trailersjson", "type is: " + type);
+
                 if (site.equals("YouTube") && type.equals("Trailer")) {
                     String key = trailer.getString(KEY_VIDEO_KEY);
                     String name = trailer.getString(KEY_NAME);
-                    Trailer tempTrailer = new Trailer(name, key);
-                    mTrailerList.add(tempTrailer);
+                    mTrailerList.add(new Trailer(name, key));
                 }
             }
         } catch (JSONException e) {
