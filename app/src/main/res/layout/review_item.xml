@@ -6,19 +6,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_review"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/margin_med"
         />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_author"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="@dimen/margin_med"/>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/divider_height"
         android:background="?android:attr/listDivider"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="32dp"/>
+        android:layout_marginTop="@dimen/margin_small"
+        android:layout_marginBottom="@dimen/margin_large"/>
 </LinearLayout>

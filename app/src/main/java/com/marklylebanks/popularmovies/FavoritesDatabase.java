@@ -18,7 +18,7 @@ public abstract class FavoritesDatabase extends RoomDatabase {
     public static FavoritesDatabase getInstance(Context context) {
         if (sInstance == null) {
             synchronized (LOCK) {
-                Log.d(LOG_TAG, "Creating ne database instance");
+                Log.d(LOG_TAG, "Creating the database instance");
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         FavoritesDatabase.class,
                         FavoritesDatabase.DATABASE_NAME)

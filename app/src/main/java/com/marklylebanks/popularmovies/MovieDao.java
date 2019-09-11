@@ -15,7 +15,13 @@ public interface MovieDao {
     @Query("SELECT * FROM favorite_movies")
     LiveData<List<Movie>> loadAllTasks();
 
-    @Insert void insertTask(Movie movie);
+    @Query("SELECT EXISTS(SELECT * FROM favorite_movies WHERE movie_id = :id)")
+            int checkExists(String id);
+
+    @Query("DELETE FROM favorite_movies WHERE movie_id = :id")
+            void deleteFromFavorites(String id);
+
+    @Insert void insertMovie(Movie movie);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateMovie(Movie movie);

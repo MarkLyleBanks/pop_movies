@@ -6,12 +6,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tv_trailer_item"
-        android:layout_margin="16dp"/>
+        android:layout_margin="@dimen/margin_med"/>
 
     <View
         android:id="@+id/divider2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/divider_height"
         android:background="?android:attr/listDivider" />
 
 
