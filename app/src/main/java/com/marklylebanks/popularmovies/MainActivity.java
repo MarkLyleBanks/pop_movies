@@ -11,6 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static MovieAdapter mMovieAdapter;
     private String mMovieListType = KEY_MOST_POPULAR;
 
+    private ViewModel mMainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mContext = getApplicationContext();
 
         mDb = FavoritesDatabase.getInstance(getApplicationContext());
+
+        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
         mRecyclerView = findViewById(R.id.rv_movies);
         mErrorView = findViewById(R.id.tv_error);
@@ -72,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         } else {
             mErrorView.setVisibility(View.INVISIBLE);
         }
-
 
     }
 
@@ -118,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     private void parseMovieData(String s) {
         try {
+            List parsingMovieList = new ArrayList<Movie>();
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(KEY_RESULTS);
             for (int i = 0; i < results.length(); i++) {
@@ -130,8 +135,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 String date = film.getString(KEY_RELEASED);
                 //Log.i("json", " title: " + title + "  id: " + id);
                 Movie tempMovie = new Movie(id, title, poster, date, viewerRating, overView);
-                mMovieList.add(tempMovie);
+                parsingMovieList.add(tempMovie);
             }
+            mMainViewModel.loadData(parsingMovieList);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -156,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return response;
+            return null;
         }
 
         @Override
@@ -168,9 +174,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         @Override
         protected void onPostExecute(String s) {
-            mProgress.setVisibility(View.INVISIBLE);
+            super.onPostExecute(s);
             parseMovieData(s);
-            mMovieAdapter.notifyDataSetChanged();
         }
     } // end of MoviesAsync class
 
