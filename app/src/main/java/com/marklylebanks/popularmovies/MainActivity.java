@@ -12,8 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     public static final String KEY_RELEASED = "release_date";
     public static final String KEY_POSITION = "position";
     public static final String KEY_MOVIE_LIST_TYPE = "list_type";
+    public static final String KEY_INSTANCE_STATE_RV_POSITION = "rv_position";
 
     public static List<Movie> mMovieList = new ArrayList<>();
     public Context mContext; // used by getDisplayWidth method
@@ -52,8 +51,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private ProgressBar mProgress;
     public static MovieAdapter mMovieAdapter;
     private String mMovieListType = KEY_MOST_POPULAR;
-
-    private ViewModel mMainViewModel;
+    private GridLayoutManager mGridLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,13 +61,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mDb = FavoritesDatabase.getInstance(getApplicationContext());
 
-        mMainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
         mRecyclerView = findViewById(R.id.rv_movies);
         mErrorView = findViewById(R.id.tv_error);
         mProgress = findViewById(R.id.pb_loading);
         mMovieAdapter = new MovieAdapter(this, mContext);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mGridLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setLayoutManager(mGridLayoutManager);
         mRecyclerView.setAdapter(mMovieAdapter);
         mRecyclerView.setSaveEnabled(true);
 
@@ -80,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             mErrorView.setVisibility(View.INVISIBLE);
         }
 
-    }
+    }// end of onCreate
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -125,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
      */
     private void parseMovieData(String s) {
         try {
-            List parsingMovieList = new ArrayList<Movie>();
             JSONObject data = new JSONObject(s);
             JSONArray results = data.getJSONArray(KEY_RESULTS);
             for (int i = 0; i < results.length(); i++) {
@@ -138,9 +134,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 String date = film.getString(KEY_RELEASED);
                 //Log.i("json", " title: " + title + "  id: " + id);
                 Movie tempMovie = new Movie(id, title, poster, date, viewerRating, overView);
-                parsingMovieList.add(tempMovie);
+                mMovieList.add(tempMovie);
             }
-            mMainViewModel.loadData(parsingMovieList);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -165,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return null;
+            return response;
         }
 
         @Override
@@ -177,10 +172,11 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         @Override
         protected void onPostExecute(String s) {
-            super.onPostExecute(s);
+            mProgress.setVisibility(View.INVISIBLE);
             parseMovieData(s);
+            mMovieAdapter.notifyDataSetChanged();
         }
     } // end of MoviesAsync class
 
 
-}// end of class
+}// end of MainActivity class

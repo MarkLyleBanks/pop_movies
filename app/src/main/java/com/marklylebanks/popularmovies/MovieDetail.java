@@ -113,26 +113,6 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             new DownloadDetails().execute(trailerArgs);
         }
 
-        /*if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_REVIEWS)) {
-            //retrieve and parse Json data and fill array list with review objects
-                Log.i("dataLoad", "loading reviews");
-                String[] reviewArgs = {KEY_REVIEWS, mId};
-                new DownloadDetails().execute(reviewArgs);
-            } else {
-            Log.i("dataLoad", "getting review saved instance state");
-               mReviewList = savedInstanceState.getParcelableArrayList(KEY_REVIEWS);
-            }
-
-            if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_TRAILERS)) {
-                //retrieve and parse Json data and fill array list with trailer objects
-                Log.i("dataLoad", "loading trailers");
-                String[] trailerArgs = {KEY_TRAILERS, mId};
-                new DownloadDetails().execute(trailerArgs);
-            }else{
-                Log.i("dataLoad", "getting trailer saved instance state");
-               mTrailerList = savedInstanceState.getParcelableArrayList(KEY_TRAILERS);
-            }*/
-
         mReviewAdapter = new ReviewAdapter();
         mReviewRecycler = findViewById(R.id.rv_reviews);
         mReviewRecycler.setLayoutManager(new LinearLayoutManager(this));
@@ -146,12 +126,6 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
         mTrailerRecycler.setSaveEnabled(true);
     }// end of onCreate
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-       // mTrailerList.clear();
-       // mReviewList.clear();
-    }
 
     @Override
     public void onBackPressed() {

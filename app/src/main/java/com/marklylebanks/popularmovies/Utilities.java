@@ -42,7 +42,8 @@ public class Utilities {
         } else if (columnSize < 780) {
             size = "w500";
         } else {
-            size = "w780";
+            //size = "w780";
+            size = "w500";
         }
         return size;
     }
