@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -98,29 +99,63 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
 
         //retrieve current movie id
         mId = mCurrentMovie.getMovieId();
+        if (mReviewList.size()==0) {
+            //retrieve and parse Json data and fill array list with review objects
+            Log.i("dataLoad", "loading reviews");
+            String[] reviewArgs = {KEY_REVIEWS, mId};
+            new DownloadDetails().execute(reviewArgs);
+        }
 
-        //retrieve and parse Json data and fill array list with review objects
-        String[] reviewArgs = {KEY_REVIEWS, mId};
-        new DownloadDetails().execute(reviewArgs);
+        if (mTrailerList.size() == 0) {
+            //retrieve and parse Json data and fill array list with trailer objects
+            Log.i("dataLoad", "loading trailers");
+            String[] trailerArgs = {KEY_TRAILERS, mId};
+            new DownloadDetails().execute(trailerArgs);
+        }
 
-        //retrieve and parse Json data and fill array list with trailer objects
-        String[] trailerArgs = {KEY_TRAILERS, mId};
-        new DownloadDetails().execute(trailerArgs);
+        /*if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_REVIEWS)) {
+            //retrieve and parse Json data and fill array list with review objects
+                Log.i("dataLoad", "loading reviews");
+                String[] reviewArgs = {KEY_REVIEWS, mId};
+                new DownloadDetails().execute(reviewArgs);
+            } else {
+            Log.i("dataLoad", "getting review saved instance state");
+               mReviewList = savedInstanceState.getParcelableArrayList(KEY_REVIEWS);
+            }
+
+            if (savedInstanceState == null || !savedInstanceState.containsKey(KEY_TRAILERS)) {
+                //retrieve and parse Json data and fill array list with trailer objects
+                Log.i("dataLoad", "loading trailers");
+                String[] trailerArgs = {KEY_TRAILERS, mId};
+                new DownloadDetails().execute(trailerArgs);
+            }else{
+                Log.i("dataLoad", "getting trailer saved instance state");
+               mTrailerList = savedInstanceState.getParcelableArrayList(KEY_TRAILERS);
+            }*/
 
         mReviewAdapter = new ReviewAdapter();
         mReviewRecycler = findViewById(R.id.rv_reviews);
         mReviewRecycler.setLayoutManager(new LinearLayoutManager(this));
         mReviewRecycler.setAdapter(mReviewAdapter);
+        mReviewRecycler.setSaveEnabled(true);
 
         mTrailerAdapter = new TrailerAdapter(this, mContext);
         mTrailerRecycler = findViewById(R.id.rv_trailers);
         mTrailerRecycler.setLayoutManager(new LinearLayoutManager(this));
         mTrailerRecycler.setAdapter(mTrailerAdapter);
-    }
+        mTrailerRecycler.setSaveEnabled(true);
+    }// end of onCreate
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+       // mTrailerList.clear();
+       // mReviewList.clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
         mTrailerList.clear();
         mReviewList.clear();
     }
@@ -146,22 +181,21 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
                 @Override
                 public void run() {
                     mDb.movieDao().deleteFromFavorites(mCurrentMovie.getMovieId());
-                    mFavButton.setImageResource(R.drawable.grey_star_image_75);
                 }
             });
             mIsFavorite = false;
-            //finish();
+            mFavButton.setImageResource(R.drawable.grey_star_image_75);
         } else {
             AppExecutors.getInstance().diskIO().execute(new Runnable() {
                 @Override
                 public void run() {
                     mDb.movieDao().insertMovie(mCurrentMovie);
-                    mFavButton.setImageResource(R.drawable.yellow_star_image_75);
                 }
             });
             mIsFavorite = true;
+            mFavButton.setImageResource(R.drawable.yellow_star_image_75);
         }
-       // MainActivity.mMovieAdapter.notifyDataSetChanged();
+        // MainActivity.mMovieAdapter.notifyDataSetChanged();
     }
 
     public void isFavorite() {
@@ -181,7 +215,7 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
         });
     }
 
-    class DownloadDetails extends AsyncTask<String, Void, String[]> {
+    private class DownloadDetails extends AsyncTask<String, Void, String[]> {
 
         @Override
         protected String[] doInBackground(String... strings) {
@@ -255,5 +289,15 @@ public class MovieDetail extends AppCompatActivity implements TrailerAdapter.Tra
             e.printStackTrace();
         }
     }// end parseTrailers
+
+  /*  @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(KEY_TRAILERS, mTrailerList);
+        outState.putParcelableArrayList(KEY_REVIEWS, mReviewList);
+
+    }*/
 }// end of MovieDetail activity
+
+
 

@@ -4,7 +4,7 @@ public class Review {
     private String mContent;
     private String mAuthor;
 
-    Review(String content, String author){
+    public Review(String content, String author){
         mContent = content;
         mAuthor = author;
     }

@@ -4,7 +4,7 @@ public class Trailer {
     private String mName;
     private String mKey;
 
-    Trailer(String name, String key){
+    public Trailer(String name, String key){
         mName = name;
         mKey = key;
     }
@@ -16,4 +16,6 @@ public class Trailer {
     public String getKey() {
         return mKey;
     }
+
+
 }
